@@ -1,13 +1,19 @@
 package com.ift.file.engine.utils;
 
+import com.lowagie.text.DocumentException;
 import com.lowagie.text.pdf.BaseFont;
+import com.spire.doc.Document;
+import com.spire.doc.FileFormat;
+import com.spire.doc.documents.XHTMLValidationType;
 import freemarker.template.Configuration;
 import freemarker.template.Template;
+import freemarker.template.TemplateException;
 import org.xhtmlrenderer.pdf.ITextRenderer;
 
 import java.io.IOException;
 import java.io.OutputStream;
 import java.io.StringWriter;
+import java.net.URISyntaxException;
 import java.util.Locale;
 
 /**
@@ -55,49 +61,47 @@ public class PdfTemplateUtils {
 
 
     /**
-     * 生成pdf
+     * 通过模板生成Html
      * @param data  传入到freemarker模板里的数据
-     * @param out   生成的pdf文件流
      */
-    public void createPDF(Object data, OutputStream out) throws IOException {
+    public String templateToHtml(Object data) throws IOException, TemplateException {
         // 创建一个FreeMarker实例, 负责管理FreeMarker模板的Configuration实例
         Configuration cfg = new Configuration(Configuration.DEFAULT_INCOMPATIBLE_IMPROVEMENTS);
         // 指定FreeMarker模板文件的位置
         cfg.setClassForTemplateLoading(getClass(), templatePath);
-//        cfg.setTemplateLoader(new FileTemplateLoader(new File("E:\\learnWorkspace\\file-engine\\src\\main\\resources\\templates"), true));
+        // 设置模板的编码格式
+        cfg.setEncoding(Locale.CHINA, encoding);
+        // 获取模板文件 template.ftl
+        Template template = cfg.getTemplate(templateFileName, encoding);
+        StringWriter writer = new StringWriter();
+        // 将数据输出到html中
+        template.process(data, writer);
+        writer.flush();
+        return writer.toString();
+    }
 
+    public void htmlToPdf(String html, OutputStream out) throws DocumentException, IOException, URISyntaxException {
         ITextRenderer renderer = new ITextRenderer();
-        try {
-            // 设置 css中 的字体样式（暂时仅支持宋体和黑体）
-            renderer.getFontResolver().addFont(classpath + fontPath + font, BaseFont.IDENTITY_H, BaseFont.NOT_EMBEDDED);
-//            renderer.getFontResolver().addFontDirectory("E:\\learnWorkspace\\file-engine\\src\\main\\resources\\fonts", BaseFont.NOT_EMBEDDED);
-            // 设置模板的编码格式
-            cfg.setEncoding(Locale.CHINA, encoding);
-            // 获取模板文件 template.ftl
-            Template template = cfg.getTemplate(templateFileName, encoding);
-            StringWriter writer = new StringWriter();
-            // 将数据输出到html中
-            template.process(data, writer);
-            writer.flush();
+        // 设置 css中 的字体样式（暂时仅支持宋体和黑体）
+        renderer.getFontResolver().addFont(classpath + fontPath + font, BaseFont.IDENTITY_H, BaseFont.NOT_EMBEDDED);
+        // 把html代码传入渲染器中
+        renderer.setDocumentFromString(html);
+        // 解决图片的相对路径问题 ##必须在设置document后再设置图片路径，不然不起作用
+        // 如果使用绝对路径依然有问题，可以在路径前面加"file:/"
+        String url = PdfTemplateUtils.class.getClassLoader().getResource("images").toURI().toString();
+        renderer.getSharedContext().setBaseURL(url);
+        renderer.layout();
+        renderer.createPDF(out, false);
+        renderer.finishPDF();
+        out.flush();
+        out.close();
+    }
 
-            String html = writer.toString();
-            // 把html代码传入渲染器中
-            renderer.setDocumentFromString(html);
-
-            // 解决图片的相对路径问题 ##必须在设置document后再设置图片路径，不然不起作用
-            // 如果使用绝对路径依然有问题，可以在路径前面加"file:/"
-            String url = PdfTemplateUtils.class.getClassLoader().getResource("images").toURI().toString();
-            renderer.getSharedContext().setBaseURL(url);
-            renderer.layout();
-
-            renderer.createPDF(out, false);
-            renderer.finishPDF();
-            out.flush();
-            out.close();
-
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+    public void htmlToPdfWithSpire(String html, OutputStream out) {
+        Document document = new Document();
+        document.loadFromFile("1.html", FileFormat.Html, XHTMLValidationType.None);
+//        document.loadFromStream(new ByteArrayInputStream(html.getBytes(StandardCharsets.UTF_8)), FileFormat.Html);
+        document.saveToFile("spire.pdf", FileFormat.PDF);
     }
 
 

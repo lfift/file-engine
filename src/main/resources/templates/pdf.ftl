@@ -1,11 +1,11 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml">
+<!DOCTYPE html>
+<html lang="zh">
 <head>
     <title></title>
     <meta http-equiv="content-type" content="text/html;charset=utf-8"/>
     <style type="text/css">
-        @page {
-            size: 210mm 297mm; /*设置纸张大小:A4(210mm 297mm)、A3(297mm 420mm) 横向则反过来*/
+        @page a4 {
+            size: 210mm 297mm;
             margin: 0.25in;
             padding: 1em;
             @bottom-center {
@@ -24,6 +24,28 @@
                 color: #000;
             };
         }
+
+        @page a3 {
+            size: 297mm 420mm;
+            margin: 0.25in;
+            padding: 1em;
+            @bottom-center {
+                content: "Bamboo © 版权所有";
+                font-family: SimSun, monospace;
+                font-size: 12px;
+                color: #000;
+            };
+            @top-center {
+                content: element(header)
+            };
+            @bottom-right {
+                content: "第" counter(page) "页  共 " counter(pages) "页";
+                font-family: SimSun, monospace;
+                font-size: 12px;
+                color: #000;
+            };
+        }
+
         body {
             font-family: SimSun, monospace;
         }
@@ -50,7 +72,7 @@
     </style>
 </head>
 <body>
-<div style="page-break-after:always;">
+<div id="page1" style="page: a3;page-break-after:always;">
     <p style="font-size: 22pt;text-align: center">重庆市食品生产加工小作坊登记证</p>
     <p style="font-size: 22pt;text-align: center">补 办 申 请 书</p>
     <br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/>
@@ -58,7 +80,7 @@
     <p style="font-size: 16pt;text-align: center">申请人名称：<span style="font-size: 16pt;text-align: center;text-decoration: underline">${sqrmc} （与登记证一致）  （公章）</span></p>
     <p style="font-size: 16pt;text-align: center">申请日期：<span style="font-size: 16pt;text-align: center;text-decoration: underline">${sqrq}</span></p>
 </div>
-<div>
+<div id="page2" style="page: a4">
     <table>
         <tr>
             <td colspan="4" style="text-align: center;font-size: 14pt;">一、申请人基本情况</td>
@@ -115,8 +137,5 @@
         </tr>
     </table>
 </div>
-<#--<div style="padding: 1em;margin: 0.25in;width: 210mm;height: 297mm;">-->
-<#--    <img width="500" height="500" src="images/test.jpg" alt="Test Image"/>-->
-<#--</div>-->
 </body>
 </html>

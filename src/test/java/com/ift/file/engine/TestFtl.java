@@ -5,7 +5,6 @@ import org.junit.jupiter.api.Test;
 
 import java.io.File;
 import java.io.FileOutputStream;
-import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -16,7 +15,7 @@ import java.util.Map;
 public class TestFtl {
 
     @Test
-    public void test() throws IOException {
+    public void test() throws Exception {
         Map<String, Object> data = new HashMap<>();
         data.put("title", "你的名字");
         data.put("sqrmc", "北碚区小飞小面馆");
@@ -33,8 +32,10 @@ public class TestFtl {
         data.put("bbyy", "许可证丢失！");
         data.put("yssj", "2021年12月10日");
 
-        FileOutputStream out = new FileOutputStream(new File("d:/1.pdf"));
+        FileOutputStream out = new FileOutputStream(new File("d:/flying-saucer.pdf"));
         PdfTemplateUtils pdfUtil = new PdfTemplateUtils();
-        pdfUtil.createPDF(data, out);
+        String html = pdfUtil.templateToHtml(data);
+        pdfUtil.htmlToPdf(html, out);
+        pdfUtil.htmlToPdfWithSpire(html, new FileOutputStream(new File("d:/spire.pdf")));
     }
 }
