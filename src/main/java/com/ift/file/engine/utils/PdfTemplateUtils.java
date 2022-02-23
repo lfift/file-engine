@@ -1,7 +1,6 @@
 package com.ift.file.engine.utils;
 
-import com.lowagie.text.DocumentException;
-import com.lowagie.text.pdf.BaseFont;
+import com.itextpdf.text.pdf.BaseFont;
 import com.spire.doc.Document;
 import com.spire.doc.FileFormat;
 import com.spire.doc.documents.XHTMLValidationType;
@@ -13,7 +12,6 @@ import org.xhtmlrenderer.pdf.ITextRenderer;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.io.StringWriter;
-import java.net.URISyntaxException;
 import java.util.Locale;
 
 /**
@@ -80,7 +78,7 @@ public class PdfTemplateUtils {
         return writer.toString();
     }
 
-    public void htmlToPdf(String html, OutputStream out) throws DocumentException, IOException, URISyntaxException {
+    public void htmlToPdf(String html, OutputStream out) throws Exception {
         ITextRenderer renderer = new ITextRenderer();
         // 设置 css中 的字体样式（暂时仅支持宋体和黑体）
         renderer.getFontResolver().addFont(classpath + fontPath + font, BaseFont.IDENTITY_H, BaseFont.NOT_EMBEDDED);
