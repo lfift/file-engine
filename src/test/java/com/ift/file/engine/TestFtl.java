@@ -36,6 +36,5 @@ public class TestFtl {
         PdfTemplateUtils pdfUtil = new PdfTemplateUtils();
         String html = pdfUtil.templateToHtml(data);
         pdfUtil.htmlToPdf(html, out);
-//        pdfUtil.htmlToPdfWithSpire(html, new FileOutputStream(new File("d:/spire.pdf")));
     }
 }

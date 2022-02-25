@@ -1,9 +1,6 @@
 package com.ift.file.engine.utils;
 
 import com.itextpdf.text.pdf.BaseFont;
-import com.spire.doc.Document;
-import com.spire.doc.FileFormat;
-import com.spire.doc.documents.XHTMLValidationType;
 import freemarker.template.Configuration;
 import freemarker.template.Template;
 import freemarker.template.TemplateException;
@@ -93,13 +90,6 @@ public class PdfTemplateUtils {
         renderer.finishPDF();
         out.flush();
         out.close();
-    }
-
-    public void htmlToPdfWithSpire(String html, OutputStream out) {
-        Document document = new Document();
-        document.loadFromFile("1.html", FileFormat.Html, XHTMLValidationType.None);
-//        document.loadFromStream(new ByteArrayInputStream(html.getBytes(StandardCharsets.UTF_8)), FileFormat.Html);
-        document.saveToFile("spire.pdf", FileFormat.PDF);
     }
 
 
